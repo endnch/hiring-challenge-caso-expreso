@@ -1,0 +1,2 @@
+# Requiere Python 3.9 o posterior, con SQLite 3.37 o posterior (ver README).
+jsonschema>=4.0  # Draft202012Validator existe desde la 4.0

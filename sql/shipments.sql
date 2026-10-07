@@ -1,6 +1,9 @@
 -- Tabla de envios basada en schema_api.py (payload de POST /v1/shipments).
 -- El objeto "recipient" se aplana en columnas recipient_*.
 -- STRICT (SQLite >= 3.37) hace que se respeten los tipos, igual que "type" en el schema.
+--
+-- Plantilla: {provincias} se reemplaza por constantes.PROVINCES al crear la tabla
+-- (src/base_datos.py, abrir_db). No ejecutar este archivo directamente.
 
 CREATE TABLE shipments (
     -- external_ref: string no vacio y unico (la API no admite dos envios con la misma referencia)
@@ -23,11 +26,7 @@ CREATE TABLE shipments (
     recipient_name       TEXT    NOT NULL CHECK (trim(recipient_name, ' ' || char(9, 10, 11, 12, 13)) <> ''),
     recipient_street     TEXT    NOT NULL CHECK (trim(recipient_street, ' ' || char(9, 10, 11, 12, 13)) <> ''),
     recipient_city       TEXT    NOT NULL CHECK (trim(recipient_city, ' ' || char(9, 10, 11, 12, 13)) <> ''),
-    recipient_province   TEXT    NOT NULL CHECK (recipient_province IN (
-                             'Buenos Aires', 'Ciudad Autónoma de Buenos Aires', 'Catamarca', 'Chaco', 'Chubut',
-                             'Córdoba', 'Corrientes', 'Entre Ríos', 'Formosa', 'Jujuy', 'La Pampa', 'La Rioja',
-                             'Mendoza', 'Misiones', 'Neuquén', 'Río Negro', 'Salta', 'San Juan', 'San Luis',
-                             'Santa Cruz', 'Santa Fe', 'Santiago del Estero', 'Tierra del Fuego', 'Tucumán')),
+    recipient_province   TEXT    NOT NULL CHECK (recipient_province IN ({provincias})),
     recipient_zip_code   TEXT    NOT NULL CHECK (trim(recipient_zip_code, ' ' || char(9, 10, 11, 12, 13)) <> ''),
     recipient_phone      TEXT,
 
