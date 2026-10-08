@@ -45,6 +45,7 @@ def escribir_reporte(r, ahora):
     agregar("Envíos nuevos creados:              %d" % len(r["nuevos"]))
     agregar("Recuperados (ya existían en la API): %d" % len(r["recuperados"]))
     agregar("Ya registrados en app.db:           %d" % len(r["ya_registrados"]))
+    agregar("No enviados (fallas de la API):     %d" % len(r["no_enviados"]))
     agregar("Erróneos:                           %d" % len(r["erroneos"]))
 
     seccion("Envíos nuevos creados")
@@ -73,6 +74,15 @@ def escribir_reporte(r, ahora):
         agregar("%s | %s | %s" % (f.get("nro_remito"), f.get("transportista", "").strip(),
                                  f.get("destinatario", {}).get("razon_social", "")))
     if not r["filtrados"]:
+        agregar("(ninguno)")
+
+    seccion("Remitos no enviados por fallas de la API (se reintentan en la próxima corrida)")
+    for n in r["no_enviados"]:
+        agregar("%s | %s | %s" % (n["remito"].get("nro_remito"),
+                                 n["remito"].get("destinatario", {}).get("razon_social", ""), n["causa"]))
+    if r["no_enviados"]:
+        agregar("Los datos de estos remitos son válidos: no hace falta modificarlos.")
+    else:
         agregar("(ninguno)")
 
     seccion(TITULO_ERRONEOS)

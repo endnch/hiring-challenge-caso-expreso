@@ -76,7 +76,7 @@ python main.py --help
 |---|---|
 | `Falta EXPRESO_API_KEY` | Crear y completar `.env` (paso 3). |
 | `API key inválida` | Revisar `EXPRESO_API_KEY` en `.env` o en el entorno. |
-| `API no disponible` en el reporte | Levantar la API (paso 4) o revisar `EXPRESO_API_URL`. |
+| Remitos en "no enviados por fallas de la API" en el reporte | Levantar la API (paso 4) o revisar `EXPRESO_API_URL` y volver a correr: se reintentan solos. |
 | `Ya hay otra ejecución en curso` | Si no hay otra corrida, el programa terminó a la fuerza: borrar `app.db.lock`. |
 | `Se necesita SQLite 3.37…` | Instalar un Python más nuevo (paso 1). |
 

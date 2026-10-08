@@ -9,14 +9,15 @@ from .constantes import ESPERA_BASE_SEGUNDOS, FACTOR_ESPERA, INTENTOS_MAXIMOS, R
 
 
 class Tipo(Enum):
-    NUEVO = "nuevo"            # lo creo esta corrida (201, o 409 despues de un fallo)
-    RECUPERADO = "recuperado"  # 409 en el primer intento: ya existia de una batch anterior
-    ERROR = "error"            # no se pudo crear
+    NUEVO = "nuevo"                    # lo creo esta corrida (201, o 409 despues de un fallo)
+    RECUPERADO = "recuperado"          # 409 en el primer intento: ya existia de una batch anterior
+    ERROR = "error"                    # la API rechazo los datos (4xx): hay que corregir el remito
+    NO_DISPONIBLE = "no disponible"    # se agotaron los reintentos (5xx / sin conexion): los datos estan bien
 
 
 def subir(config, payload):
     """POST con reintentos. Devuelve un dict con:
-      tipo: Tipo.NUEVO | Tipo.RECUPERADO | Tipo.ERROR
+      tipo: Tipo.NUEVO | Tipo.RECUPERADO | Tipo.ERROR | Tipo.NO_DISPONIBLE
       tracking_id, fallos (codigos 5xx / errores de conexion vistos), detalle,
       creado_en_fallo: True si un intento que fallo igual habia creado el envio (409 posterior)
     """
@@ -53,6 +54,6 @@ def subir(config, payload):
         return {"tipo": Tipo.ERROR, "tracking_id": None, "fallos": fallos,
                 "detalle": "la API respondió %s: %s" % (codigo, detalle)}
 
-    return {"tipo": Tipo.ERROR, "tracking_id": None, "fallos": fallos,
+    return {"tipo": Tipo.NO_DISPONIBLE, "tracking_id": None, "fallos": fallos,
             "detalle": "API no disponible: falló %d veces (%s)" % (
                 len(fallos), ", ".join(str(f) for f in fallos))}

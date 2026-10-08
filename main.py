@@ -52,8 +52,9 @@ def main():
         print("Batch %d: %d envíos nuevos." % (resultado["batch_id"], len(resultado["nuevos"])))
     else:
         print("No se realizaron operaciones: no se creó ningún envío nuevo ni un nuevo batch.")
-    print("Recuperados: %d | Ya registrados: %d | Erróneos: %d" % (
-        len(resultado["recuperados"]), len(resultado["ya_registrados"]), len(resultado["erroneos"])))
+    print("Recuperados: %d | Ya registrados: %d | No enviados (fallas de la API): %d | Erróneos: %d" % (
+        len(resultado["recuperados"]), len(resultado["ya_registrados"]), len(resultado["no_enviados"]),
+        len(resultado["erroneos"])))
     print("Reporte: %s" % ruta)
 
 

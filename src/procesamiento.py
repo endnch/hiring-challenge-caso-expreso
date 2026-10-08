@@ -20,7 +20,7 @@ def procesar(config, archivo):
 
     resultado = {"archivo": str(archivo), "total": len(remitos), "filtrados": [], "duplicados": [],
                  "nuevos": [], "recuperados": [], "ya_registrados": [], "observaciones": [],
-                 "erroneos": [], "batch_id": None}
+                 "erroneos": [], "no_enviados": [], "batch_id": None}
 
     # 1. Filtrar
     andino = []
@@ -78,6 +78,14 @@ def procesar(config, archivo):
 
             # No confundir con "resultado", el resumen de toda la corrida.
             respuesta = subir(config, payload)
+
+            if respuesta["tipo"] is Tipo.NO_DISPONIBLE:
+                # Los datos estan bien: no va a "erroneos". Como no queda en app.db,
+                # se vuelve a intentar en la proxima corrida.
+                resultado["observaciones"].append("%s: falló en los %d intentos; se dejó de reintentar (%s)" % (
+                    ref, len(respuesta["fallos"]), ", ".join(str(x) for x in respuesta["fallos"])))
+                resultado["no_enviados"].append({"remito": remito, "causa": respuesta["detalle"]})
+                continue
 
             if respuesta["fallos"]:
                 resultado["observaciones"].append("%s: %d intento(s) fallido(s) antes de la respuesta final (%s)" % (
